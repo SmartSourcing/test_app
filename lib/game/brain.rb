@@ -3,7 +3,7 @@ module Game
 
     attr_reader :player_turn
     attr_reader :game_status
-    attr_reader :board_clicks
+    attr_reader :board_moves
 
     @@AVAILABLE_PLAYERS = [1,2]
     @@PLAYERS_COLORS    = [ 'red', 'blue' ]
@@ -23,7 +23,7 @@ module Game
     #= Records a move an pass the turn to the other player
     def moved(player_id,column,row)
 
-      @board_moves << { player_id: player_id, column: column, row: row }
+      @board_moves << { player_id: @@PLAYERS_COLORS[player_id-1], column: column, row: row }
 
       if player_id == @@AVAILABLE_PLAYERS[@@AVAILABLE_PLAYERS.count-1]
 

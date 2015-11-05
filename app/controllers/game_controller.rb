@@ -25,7 +25,7 @@ class GameController < ApplicationController
     puts "player #{player_id}"
     puts "game : #{@game.player_turn}"
     puts "turn is: #{(@game.player_turn.to_i == player_id.to_i)}"
-    render json: { status: 'ok', data: (@game.player_turn.to_i == player_id.to_i) }
+    render json: { status: 'ok', data: (@game.player_turn.to_i == player_id.to_i) , blocks: @game.board_moves }
   end
 
   #= This happens when a player actually plays :)

@@ -155,4 +155,19 @@ class Application.Game
           alert(textStatus)
         success: (data) ->
           game.current_turn = data['data']
+          game.re_draw(data['blocks'])
+    return
+
+  clear_board:() ->
+    $('#game').find('td').each (index, element) ->
+      $(element).attr 'bgcolor','white'
+    return
+
+  re_draw:(data) ->
+    me = @
+    @clear_board()
+    for block in data
+      $("#td_#{block.row}_#{block.column}").attr('bgcolor',block.player_id)
+      me.matrix[block.column][block.row] = block.player
+
     return
