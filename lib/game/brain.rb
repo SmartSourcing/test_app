@@ -5,8 +5,8 @@ module Game
     attr_reader :game_status
     attr_reader :board_clicks
 
-    @AVAILABLE_PLAYERS = [1,2]
-    @@PLAYERS_COLORS   = [ 'red', 'blue' ]
+    @@AVAILABLE_PLAYERS = [1,2]
+    @@PLAYERS_COLORS    = [ 'red', 'blue' ]
 
     def initialize()
       @player_turn  = 1
@@ -25,11 +25,13 @@ module Game
 
       @board_moves << { player_id: player_id, column: column, row: row }
 
-      if player_id = @AVAILABLE_PLAYERS.last()
+      if player_id == @@AVAILABLE_PLAYERS[@@AVAILABLE_PLAYERS.count-1]
 
-        @player_turn = @AVAILABLE_PLAYERS.firt()
+        puts "case.1"
+        @player_turn = @@AVAILABLE_PLAYERS[0]
       else
 
+        puts "case.2"
         @player_turn = player_id + 1
       end
     end

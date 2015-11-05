@@ -20,8 +20,9 @@ class Application.Game
     @players      = players
     @player       = player
     @player_id    = player_id
-    @current_turn = null
+    @current_turn = ( player_id == 1 )
     @new()
+    @interval_handler = setInterval @check_turn, 5000
     true
 
   draw:(container) ->
@@ -48,6 +49,10 @@ class Application.Game
     $(container).append(table)
 
   clicked:(sender) ->
+    if !@current_turn
+      alert 'Espere su turno'
+      return
+
     column  =  $(sender).attr 'col'
     @play column
     return
@@ -67,12 +72,14 @@ class Application.Game
       @current_turn = @player
       free_slot = @find_free_slot(column)
       if free_slot == -1
-        return @statuses[@game_over]
-
+        return @game_over()
       return @perform_move @player,column,free_slot
-
     else
-      return @statuses[@game_over]
+      return @game_over()
+
+  game_over:() ->
+    clearTimeout @interval_handler
+    return @statuses[@game_over]
 
   find_free_slot:(column) ->
     rows = @matrix[column]
@@ -126,13 +133,26 @@ class Application.Game
     return "TODO"
 
   sync:(column,row) ->
+    me = @
     $.ajax
       method: 'post'
       url: "/game/#{@player_id}"
       data: { player_id: @player_id, column: column ,row: row}
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
-        alert textStatus
+        me.current_turn = true
       success: (data) ->
-        alert data
+        me.current_turn = false
+    return
+
+  check_turn:() ->
+    if game.current_turn == false
+      $.ajax
+        method: 'get'
+        url: "/game/#{game.player_id}/my_turn"
+        dataType: "json"
+        error: (jqXHR, textStatus, errorThrown) ->
+          alert(textStatus)
+        success: (data) ->
+          game.current_turn = data['data']
     return
