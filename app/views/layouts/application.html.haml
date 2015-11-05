@@ -1,0 +1,30 @@
+!!!
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}
+      %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}
+        %meta{:content => "width=device-width, initial-scale=1", :name => "viewport"}
+          / The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags
+          %title Connected Four
+          = stylesheet_link_tag 'application', media: 'all'
+          = javascript_include_tag 'application'
+          = csrf_meta_tags
+  %body{ style: "width: 98%; margin-left:auto;margin-right:auto;"}
+    %nav.navbar.navbar-default
+      .container-fluid
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "#"} #{I18n.t('app.title')}
+        / Collect the nav links, forms, and other content for toggling
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          %ul.nav.navbar-nav
+            %li.active
+              %a{:href => "#"}
+                New Game
+                %span.sr-only (current)
+    = yield
