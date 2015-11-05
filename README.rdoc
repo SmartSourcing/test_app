@@ -1,4 +1,10 @@
 == README
 
-== To Run it use
-foreman start -f procfile.development
+== To Install it
+
+rails generate less_rails_bootstrap:custom_bootstrap
+rails generate rspec:install
+rails generate cucumber:installrgam --capybara
+
+== To Run it
+foreman start -f procfile.development or rails s
