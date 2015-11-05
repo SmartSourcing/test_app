@@ -1,9 +1,9 @@
 .panel.panel-default
   %br
   %h2 #{I18n.t('app.game_board')}::#{@player}
+  %span{ id:'status' }
   #main
 
 :javascript
   var translations = #{I18n.t('game').to_json};
-  var game = new Application.Game(['red','blue'],"#{@player}",#{@player_id});
-  game.draw('#main');
+  var game = new Application.Game(['red','blue'],"#{@player}",#{@player_id},#{@plays});

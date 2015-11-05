@@ -15,6 +15,7 @@ class GameController < ApplicationController
     player_id   = params[:id].to_i
     @player     = @game.get_player player_id
     @player_id  = params[:id].to_i
+    @plays      = @game.board_moves.to_json
   end
 
   #= Checks if the player can player

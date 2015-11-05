@@ -11,7 +11,7 @@ class Application.Game
   next_turn: 2
   win: 3
 
-  constructor: (players,player,player_id) ->
+  constructor: (players,player,player_id,plays) ->
     @statuses     = [ 'idle', 'game.over', 'next_turn', 'win' ]
     @matrix       = null
     @rows         = 6
@@ -22,6 +22,9 @@ class Application.Game
     @player_id    = player_id
     @current_turn = ( player_id == 1 )
     @new()
+    @draw '#main'
+    @re_draw(plays) if plays != null
+    @set_status()
     @interval_handler = setInterval @check_turn, 5000
     true
 
@@ -65,6 +68,12 @@ class Application.Game
         rows.push ''
       @matrix.push rows
     true
+
+  set_status:() ->
+    if (@current_turn)
+      $('#status').html 'playing'
+    else
+      $('#status').html 'wait your turn'
 
   play:(column) ->
     if @status != @statuses[@game_over]
@@ -134,15 +143,20 @@ class Application.Game
 
   sync:(column,row) ->
     me = @
+    @fade_in()
     $.ajax
       method: 'post'
       url: "/game/#{@player_id}"
       data: { player_id: @player_id, column: column ,row: row}
       dataType: "json"
       error: (jqXHR, textStatus, errorThrown) ->
+        me.fade_out()
         me.current_turn = true
+        me.set_status()
       success: (data) ->
+        me.fade_out()
         me.current_turn = false
+        me.set_status()
     return
 
   check_turn:() ->
@@ -154,8 +168,11 @@ class Application.Game
         error: (jqXHR, textStatus, errorThrown) ->
           alert(textStatus)
         success: (data) ->
+          game.fade_in()
           game.current_turn = data['data']
           game.re_draw(data['blocks'])
+          game.set_status()
+          game.fade_out()
     return
 
   clear_board:() ->
@@ -170,4 +187,12 @@ class Application.Game
       $("#td_#{block.row}_#{block.column}").attr('bgcolor',block.player_id)
       me.matrix[block.column][block.row] = block.player
 
+    return
+
+  fade_in:() ->
+    $('body').css 'opacity','0.1'
+    return
+
+  fade_out:() ->
+    $('body').css 'opacity','1'
     return
