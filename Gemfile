@@ -25,6 +25,8 @@ gem "haml-rails"
 gem 'unicorn', '~> 4.8.3'
 # for background processing
 gem 'sidekiq'
+# for heroku
+gem 'rails_12factor'
 
 group :doc do
 
