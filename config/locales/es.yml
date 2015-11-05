@@ -1,3 +1,9 @@
 en:
   app:
     title: 4 en lineas
+    game_board: Tablero de juego
+  game:
+    idle: Esperando para jugar
+    game.over: Juego terminado, nadie gana!
+    next_turn: Proximo turno.
+    win: Ganaste!

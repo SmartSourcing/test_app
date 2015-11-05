@@ -1,3 +1,9 @@
 en:
   app:
     title: Connected four
+    game_board: Game board
+  game:
+    idle: Idle
+    game.over: Game over, no more moves !
+    next_turn: Next turn!
+    win: You Win!
