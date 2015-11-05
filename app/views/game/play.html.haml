@@ -5,5 +5,5 @@
 
 :javascript
   var translations = #{I18n.t('game').to_json};
-  var game = new Application.Game(['red','blue']);
+  var game = new Application.Game(['red','blue'],"#{@player}",#{@player_id});
   game.draw('#main');

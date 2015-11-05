@@ -11,19 +11,21 @@ class Application.Game
   next_turn: 2
   win: 3
 
-  constructor: (players) ->
+  constructor: (players,player,player_id) ->
     @statuses     = [ 'idle', 'game.over', 'next_turn', 'win' ]
     @matrix       = null
     @rows         = 6
-    @columns       = 7
+    @columns      = 7
     @status       = 'idle'
     @players      = players
+    @player       = player
+    @player_id    = player_id
     @current_turn = null
     @new()
     true
 
   draw:(container) ->
-
+    me = @
     table = $('<table></table>')
     table.attr('id','game')
 
@@ -32,13 +34,23 @@ class Application.Game
       tr.attr('id',"tr_#{row_index}")
       for column_index in [0..@columns-1]
         td = $('<td width="100" height="100"></td>');
-        td.attr('id',"td_#{row_index}_#{column_index}")
+        td.attr 'id',"td_#{row_index}_#{column_index}"
+        td.attr 'row',row_index
+        td.attr 'col',column_index
         td.html '&nbsp;'
+        td.bind 'click', () ->
+          me.clicked(this)
+
         tr.append(td)
       table.append(tr)
 
     player = $('<span></span>')
     $(container).append(table)
+
+  clicked:(sender) ->
+    column  =  $(sender).attr 'col'
+    @play column
+    return
 
   new:() ->
     @matrix = []
@@ -49,32 +61,39 @@ class Application.Game
       @matrix.push rows
     true
 
-  move:(player,column) ->
+  play:(column) ->
     if @status != @statuses[@game_over]
 
-      @current_turn = player
-      free_slot = @find_free_slot(column-1)
+      @current_turn = @player
+      free_slot = @find_free_slot(column)
       if free_slot == -1
         return @statuses[@game_over]
 
-      return @perform_move player,column,free_slot
+      return @perform_move @player,column,free_slot
 
     else
       return @statuses[@game_over]
 
   find_free_slot:(column) ->
     rows = @matrix[column]
-    for row in rows
-      if @matrix[column][row] == ''
-        return row
+    row_index = 0
+    for row_index in [@rows-1..0] by -1
+      if @matrix[column][row_index] == ''
+        return row_index
+      row_index++
 
     return -1
 
   perform_move:(player,column,free_slot) ->
     @matrix[column][free_slot] = player
+    td = $("#td_#{free_slot}_#{column}")
+    td.attr 'bgcolor',player
+    @sync column,free_slot
+
     return @check_for_win(player)
 
-  @check_for_win:(player) ->
+  check_for_win:(player) ->
+    return false
     if @check_horizontal(player) || @check_vertical(player) || @check_diagonal(player) == true
       return @statuses[@win]
     else
@@ -105,3 +124,15 @@ class Application.Game
 
   check_diagonal:(player) ->
     return "TODO"
+
+  sync:(column,row) ->
+    $.ajax
+      method: 'post'
+      url: "/game/#{@player_id}"
+      data: { player_id: @player_id, column: column ,row: row}
+      dataType: "json"
+      error: (jqXHR, textStatus, errorThrown) ->
+        alert textStatus
+      success: (data) ->
+        alert data
+    return
