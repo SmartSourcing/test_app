@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: test_app
+  password:
+
+development:
+  <<: *default
+  database: testapp_development
+
+test: &test
+  <<: *default
+  database: testapp_test
+
+cucumber:
+  <<: *test
